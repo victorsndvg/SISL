@@ -20,6 +20,7 @@ FILE(GLOB sisl_SRCS src/*.c include/*.h)
 ADD_LIBRARY(sisl ${sisl_SRCS})
 SET_PROPERTY(TARGET sisl
   PROPERTY FOLDER "sisl/Libs")
+EXPORT(TARGETS sisl APPEND FILE ${PROJECT_BINARY_DIR}/SISLTargets.cmake)
 
 # This line may be needed only on AMD 64 bit...
 #IF(NOT WIN32)
@@ -86,3 +87,12 @@ IF(NOT GoTools_ALL_COMPILE)
 ENDIF(NOT GoTools_ALL_COMPILE)
 
 SET(CPACK_STRIP_FILES ${CPACK_STRIP_FILES} libsisl.so)
+
+#################################################################
+# CREATE CONFIG FILE
+#################################################################
+
+SET(CMAKE_PATH ${CMAKE_SOURCE_DIR}/CMake)
+CONFIGURE_FILE(${CMAKE_PATH}/SISLConfig.cmake.in 
+               ${PROJECT_BINARY_DIR}/SISLConfig.cmake
+               @ONLY)

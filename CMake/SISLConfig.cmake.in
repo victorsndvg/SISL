@@ -1,0 +1,59 @@
+#################################################################
+# SISL Config file
+#################################################################
+
+SET(TARGET_NAME @PROJECT_NAME@)
+
+#################################################################
+# PATHS
+#################################################################
+
+SET(SISL_DIR          @PROJECT_BINARY_DIR@)
+SET(SISL_BINARY_DIRS  @EXECUTABLE_OUTPUT_PATH@)
+SET(SISL_LIBRARY_DIRS @LIBRARY_OUTPUT_PATH@)
+SET(SISL_INCLUDE_DIRS @MODULE_OUTPUT_PATH@)
+
+#################################################################
+# TARGETS
+#################################################################
+
+SET(SISL_INC_SUFFIXES "include" "cmake" "SISL" "include/SISL" "cmake/SISL")
+
+SET(SISL_FOUND FALSE)
+
+FIND_FILE(SISL_TARGET
+    NAMES SISLTargets.cmake
+    PATHS ${SISL_DIR}  ENV PATH LD_LIBRARY_PATH
+    PATH_SUFFIXES ${SISL_INC_SUFFIXES}
+    DOC "The path to SISL library"
+)
+
+IF(SISL_TARGET)
+    INCLUDE(${SISL_TARGET})
+
+    SET(SISL_FOUND TRUE)
+
+    GET_PROPERTY(SISL_BUILD_TYPE 
+                 TARGET ${TARGET_NAME}
+                 PROPERTY IMPORTED_CONFIGURATIONS)
+
+    GET_PROPERTY(SISL_LINK_LIBS 
+                 TARGET ${TARGET_NAME}
+                 PROPERTY IMPORTED_LINK_INTERFACE_LIBRARIES_${SISL_BUILD_TYPE})
+
+    GET_PROPERTY(SISL_LIB 
+                 TARGET ${TARGET_NAME}
+                 PROPERTY IMPORTED_LOCATION_${SISL_BUILD_TYPE})
+
+    SET(SISL_LIBS 
+                 ${SISL_LINK_LIBS} ${SISL_LIB} 
+                 CACHE STRING "SISL libraries to link")
+
+    SET(SISL_INCLUDES 
+                 ${SISL_INCLUDE_DIRS} 
+                 CACHE STRING "Directories containing SISL modules")
+ELSE()
+    MESSAGE(FATAL_ERROR "Cannot find ${TARGET_NAME} TARGET description. ${TARGET_NAME}_DIR must contain a path where to find ${TARGET_NAME} already builded!")
+ENDIF()
+
+UNSET(SISL_TARGET CACHE)
