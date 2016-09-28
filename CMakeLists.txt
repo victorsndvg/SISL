@@ -13,6 +13,7 @@ INCLUDE_DIRECTORIES(
   ${sisl_SOURCE_DIR}/include
   )
 
+SET(SISL_INCLUDE_DIRS ${sisl_SOURCE_DIR}/include)
 
 # Make the sisl library
 
